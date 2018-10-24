@@ -173,7 +173,7 @@ void obtemVertices(Grafo* grafo, char arquivo[]) {
     free(nome_vertices);
 }
 
-void criaMatrizAdjacencia(Grafo *grafo, char arquivo[]) {
+void criaMatrizAdjacencia(Grafo *grafo, char arquivo[], char arquivoPesos[]) { //Ana adicionei parâmetro
     /* Funcao que cria uma matriz com 0s e 1s.
     Caso o vertice A incida o vertice B, a aresta é 1.
     Ao final, altera-se o Grafo passado
@@ -186,7 +186,9 @@ void criaMatrizAdjacencia(Grafo *grafo, char arquivo[]) {
     int linha, coluna, i;
     char **nome_vertices;
     FILE *arq;
+    FILE *arqPesos; //Ana
     arq = fopen(arquivo, "r"); /*abre arquivo em modo leitura*/
+    arqPesos = fopen(arquivoPesos, "r"); /*Ana abre arquivo em modo leitura*/
     if (arq == NULL) {
         printf("Erro, nao foi possivel abrir o arquivo\n");
         return;
@@ -198,7 +200,7 @@ void criaMatrizAdjacencia(Grafo *grafo, char arquivo[]) {
     }
 
     /* Declaracao da Matriz de Adjacencia,
-    contendo 0 ou 1 se houve arestas*/
+    contendo 0 ou 1 se houve arestas*/ //Ana vou modificar para o peso da aresta
     int **matrizadj;
 
     /* Com base no numero de elementos,
@@ -235,10 +237,11 @@ void criaMatrizAdjacencia(Grafo *grafo, char arquivo[]) {
         char * found = (char *) bsearch(palavra1, nome_vertices, grafo->tamanho, sizeof (char *), myStrCmp);
         char * found2 = (char *) bsearch(palavra2, nome_vertices, grafo->tamanho, sizeof (char *), myStrCmp);
 
-        linha = ((int) found - (int) nome_vertices) / sizeof (char*); //encontra a posiÃ§Ã£o no vetor gerada pelo bsearch
+        linha = ((int) found - (int) nome_vertices) / sizeof (char*); //encontra a posicao no vetor gerada pelo bsearch
         coluna = ((int) found2 - (int) nome_vertices) / sizeof (char*);
 
-        matrizadj[linha][coluna] = 1;
+        //Ana antigo -- 
+        matrizadj[linha][coluna] = 1;//Ana novo 
 
     }
     grafo->matrizadj = matrizadj;
@@ -357,8 +360,9 @@ void CalculaPageRank(Grafo*grafo, float dumping_factor) {
 int main() {
     Grafo grafo;
     char arquivo[] = "D:/DisciplinaUFMG/ModelThinking/Trabalho/Oficial/grafo.txt";
+    char arquivoPesos[] = "D:/DisciplinaUFMG/ModelThinking/Trabalho/Oficial/pesos.txt";
     obtemVertices(&grafo, arquivo);
-    criaMatrizAdjacencia(&grafo, arquivo);
+    criaMatrizAdjacencia(&grafo, arquivo, arquivoPesos);
      /*Testa o pageRank */
     CalculaPageRank(&grafo,0.85);
     imprimeTopKPageRank(&grafo,20);
